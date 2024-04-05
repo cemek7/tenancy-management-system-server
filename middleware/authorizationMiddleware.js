@@ -1,16 +1,23 @@
 // middleware/authorizationMiddleware.js
+exports.authorizeAdmin = (req, res, next) => {
+  if (req.userRole !== 'admin') {
+    return res.status(403).json({ message: 'Forbidden - Admin access required' });
+  }
+  next();
+};
 
-// Example middleware for authorization
+exports.authorizePropertyManagerOrLandlord = (req, res, next) => {
+  if (req.userRole !== 'propertyManager' && req.userRole !== 'landlord') {
+    return res.status(403).json({ message: 'Forbidden - Property Manager or Landlord access required' });
+  }
+  next();
+};
 
-// Middleware function to authorize user access based on role
-exports.authorize = (req, res, next) => {
-    try {
-        // Implement logic to check user role and authorize access
-        next(); // Call next() if authorization is successful
-    } catch (error) {
-        console.error('Error authorizing user:', error);
-        res.status(403).json({ error: 'Forbidden' });
-    }
+exports.authorizeTenant = (req, res, next) => {
+  if (req.userRole !== 'tenant') {
+    return res.status(403).json({ message: 'Forbidden - Tenant access required' });
+  }
+  next();
 };
 
 // Other authorization-related middleware functions can be added here
