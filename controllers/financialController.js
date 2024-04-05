@@ -1,13 +1,13 @@
 // controllers/financialController.js
 
-const RentPayment = require('../models/RentPayment');
+const Rent = require('../models/Rent');
 const Expense = require('../models/Expense');
 
 exports.generateFinancialReports = async (req, res) => {
     try {
         // Calculate total income from rent payments
-        const rentPayments = await RentPayment.find();
-        const totalRentIncome = rentPayments.reduce((total, payment) => total + payment.amount, 0);
+        const rents = await Rent.find();
+        const totalRentIncome = rents.reduce((total, rent) => total + rent.amount, 0);
 
         // Calculate total expenses for maintenance
         const expenses = await Expense.find();
