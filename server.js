@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
 const tenantRoutes = require('./routes/tenantRoutes');
+const rentRoutes = require('./routes/rentRoutes'); 
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/properties', propertyRoutes);
 app.use('/tenants', tenantRoutes);
+app.use('/rents', rentRoutes);
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/tenancy-management', { useNewUrlParser: true, useUnifiedTopology: true })
