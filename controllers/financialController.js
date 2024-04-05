@@ -1,15 +1,52 @@
 // controllers/financialController.js
 
+const RentPayment = require('../models/RentPayment');
+const Expense = require('../models/Expense');
+
 exports.generateFinancialReports = async (req, res) => {
     try {
-        // Implement logic to generate financial reports here
-        // Example: generate profit and loss statements, balance sheets, cash flow statements, etc.
-        // Return the generated reports
-        const reports = {
-            profitAndLoss: { /* Generated profit and loss statement */ },
-            balanceSheet: { /* Generated balance sheet */ },
-            cashFlow: { /* Generated cash flow statement */ },
+        // Calculate total income from rent payments
+        const rentPayments = await RentPayment.find();
+        const totalRentIncome = rentPayments.reduce((total, payment) => total + payment.amount, 0);
+
+        // Calculate total expenses for maintenance
+        const expenses = await Expense.find();
+        const totalMaintenanceExpenses = expenses.reduce((total, expense) => {
+            if (expense.category === 'maintenance') {
+                return total + expense.amount;
+            }
+            return total;
+        }, 0);
+
+        // Calculate profit and loss
+        const netProfitLoss = totalRentIncome - totalMaintenanceExpenses;
+
+        // Generate balance sheet
+        const balanceSheet = {
+            assets: {
+                totalRentIncome,
+            },
+            liabilities: {
+                totalMaintenanceExpenses,
+            },
+            equity: {
+                netProfitLoss,
+            },
         };
+
+        // Generate cash flow statement (assuming no other cash flows for simplicity)
+        const cashFlowStatement = {
+            income: totalRentIncome,
+            expenses: totalMaintenanceExpenses,
+            netCashFlow: totalRentIncome - totalMaintenanceExpenses,
+        };
+
+        const reports = {
+            profitAndLoss: { netProfitLoss },
+            balanceSheet,
+            cashFlow: cashFlowStatement,
+        };
+        
         res.status(200).json(reports);
     } catch (error) {
         console.error('Error generating financial reports:', error);
